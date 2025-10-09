@@ -1,3 +1,4 @@
+import 'package:asistec_b/configuration.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:asistec_b/main.dart';
@@ -63,7 +64,7 @@ class SecondS extends StatelessWidget {
               onTap: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const MyApp()),
+                  MaterialPageRoute(builder: (context) => const Config()),
                 );
               },
             ),
