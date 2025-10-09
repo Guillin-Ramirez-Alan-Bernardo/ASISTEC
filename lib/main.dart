@@ -6,8 +6,12 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  final bool showLogoutMessage; //Los elementos que queria que se vean en la pantalla, aqui se ingresan primero
-  const MyApp({super.key, this.showLogoutMessage =  false}); //Luego se registran aqui, pero no se registra dentro de la clase con los elementos
+  final bool
+  showLogoutMessage; //Los elementos que queria que se vean en la pantalla, aqui se ingresan primero
+  const MyApp({
+    super.key,
+    this.showLogoutMessage = false,
+  }); //Luego se registran aqui, pero no se registra dentro de la clase con los elementos
 
   // This widget is the root of your application.
   @override
@@ -30,17 +34,21 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 3, 11, 234)),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 3, 11, 234),
+        ),
       ),
-      home: MyHomePage(title: '',
-      showLogoutMessage: showLogoutMessage,
-      ),
+      home: MyHomePage(title: '', showLogoutMessage: showLogoutMessage),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title, this.showLogoutMessage = false,});
+  const MyHomePage({
+    super.key,
+    required this.title,
+    this.showLogoutMessage = false,
+  });
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -52,7 +60,8 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String title;
-  final bool showLogoutMessage;  //Este showLogoutMesse es el que define en toda la clase, aparte de los demas
+  final bool
+  showLogoutMessage; //Este showLogoutMesse es el que define en toda la clase, aparte de los demas
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -82,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       }
     });
-  }  
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,67 +117,55 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
 
-        children: [
-            Image.asset(
-            'assets/imagenes/tec1.png',
-                width: 400,
-                height: 200,
-            ),
+          children: [
+            Image.asset('assets/imagenes/tec1.png', width: 400, height: 200),
 
+            const SizedBox(height: 10),
 
-          const SizedBox(height: 10),
-            
             TextField(
               decoration: const InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: 'Número de control',
+                border: OutlineInputBorder(),
+                labelText: 'Número de control',
               ),
             ),
 
-          const SizedBox(height: 40),
-            
+            const SizedBox(height: 40),
+
             TextField(
               obscureText: passwordVisible,
               decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              hintText: "Contraseña",
-              labelText: "Contraseña",
-              helperStyle: const TextStyle(color: Colors.green),
-              suffixIcon: IconButton(
-              icon: Icon(
-                passwordVisible ? Icons.visibility : Icons.visibility_off,
-              ),
-                onPressed: () {
-                  setState(() {
-                    passwordVisible = !passwordVisible;
-                  });
-                },
-              ),
-            ),
-          ),
-          
-          const SizedBox(height: 10),
-          ElevatedButton(
-             onPressed: () {
-               // Acción que se ejecuta al presionar el botón
-              Navigator.push(
-                context, 
-                MaterialPageRoute(
-                builder: (context) => const SecondS(),
+                border: const OutlineInputBorder(),
+                hintText: "Contraseña",
+                labelText: "Contraseña",
+                helperStyle: const TextStyle(color: Colors.green),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    passwordVisible ? Icons.visibility : Icons.visibility_off,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      passwordVisible = !passwordVisible;
+                    });
+                  },
                 ),
-              );
-            },
-            child: const Text("Iniciar sesion")
+              ),
             ),
 
-          const SizedBox(height: 10),
-          Image.asset(
-            'assets/imagenes/Lo.jpg',
-              width: 200,
-              height: 150,
-          ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                // Acción que se ejecuta al presionar el botón
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SecondS()),
+                );
+              },
+              child: const Text("Iniciar sesion"),
+            ),
 
-        ],
+            const SizedBox(height: 10),
+            Image.asset('assets/imagenes/Lo.jpg', width: 200, height: 150),
+          ],
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
           // children horizontally, and tries to be as tall as its parent.
@@ -183,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // action in the IDE, or press "p" in the console), to see the
           // wireframe for each widget.
         ),
-      ),    
+      ),
     );
   }
 }
