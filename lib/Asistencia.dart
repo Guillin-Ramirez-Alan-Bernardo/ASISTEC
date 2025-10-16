@@ -2,10 +2,11 @@ import 'package:asistec_b/configuration.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:asistec_b/main.dart';
+import 'package:asistec_b/Second_S.dart';
 import 'package:asistec_b/Asistencia.dart';
 
-class SecondS extends StatelessWidget {
-  const SecondS({super.key});
+class Asiste extends StatelessWidget {
+  const Asiste({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +47,12 @@ class SecondS extends StatelessWidget {
               title: Text('Personal'),
               children: [
                 ListTile(
-                  leading: Icon(Icons.access_time),
-                  title: Text('Asistencia del Personal'),
+                  leading: Icon(Icons.access_alarm),
+                  title: Text('Alta de personal'),
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const Asiste()),
+                      MaterialPageRoute(builder: (context) => Asiste()),
                     );
                   },
                 ),

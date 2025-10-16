@@ -3,6 +3,7 @@ import 'dart:io'; // para usar File con imágenes locales
 import 'package:image_picker/image_picker.dart'; // para seleccionar imágenes
 import 'package:asistec_b/Second_S.dart';
 import 'package:asistec_b/main.dart';
+import 'package:asistec_b/Asistencia.dart';
 
 class Config extends StatefulWidget {
   const Config({super.key});
@@ -57,11 +58,20 @@ class _ConfigState extends State<Config> {
                 );
               },
             ),
-            const ExpansionTile(
+            ExpansionTile(
               leading: Icon(Icons.people),
               title: Text('Personal'),
               children: [
-                ListTile(title: Text('Alta de personal')),
+                ListTile(
+                  leading: Icon(Icons.access_alarm),
+                  title: Text('Asistencia del Personal'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => Asiste()),
+                    );
+                  },
+                ),
                 ListTile(title: Text('Baja de personal')),
               ],
             ),
