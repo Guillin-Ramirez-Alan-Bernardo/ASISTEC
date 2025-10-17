@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:asistec_b/main.dart';
 import 'package:asistec_b/Second_S.dart';
-import 'package:asistec_b/Asistencia.dart';
 
-class Asiste extends StatelessWidget {
+class Asiste extends StatefulWidget {
   const Asiste({super.key});
 
   @override
+  State<Asiste> createState() => _AsisteState();
+}
+
+class _AsisteState extends State<Asiste> {
+  DateTime? fechaGu;
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -48,7 +53,7 @@ class Asiste extends StatelessWidget {
               children: [
                 ListTile(
                   leading: Icon(Icons.access_alarm),
-                  title: Text('Alta de personal'),
+                  title: Text('Asistencia del Personal'),
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
@@ -56,7 +61,7 @@ class Asiste extends StatelessWidget {
                     );
                   },
                 ),
-                ListTile(title: Text('Baja de personal')),
+                ListTile(title: Text('Reportes de Insidencias')),
               ],
             ),
             ListTile(
@@ -89,7 +94,7 @@ class Asiste extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const Text(
-              '¡Bienvenid@ ________________ Que te Gustaria consultar el dia de hoy!',
+              '¡Aqui puedes registra tu asistencia el dia de hoy',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -99,15 +104,30 @@ class Asiste extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            TableCalendar(
-              focusedDay: DateTime.now(),
-              firstDay: DateTime.utc(2025, 10, 1),
-              lastDay: DateTime.utc(2030, 1, 1),
-              calendarFormat: CalendarFormat.month,
-              onDaySelected: (selectedDay, focusedDay) {
-                print('Seleccionaste: $selectedDay');
+            ElevatedButton(
+              onPressed: () {
+                // Acción que se ejecuta al presionar el botón
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SecondS()),
+                );
               },
+              child: const Text("Registra asistencia"),
             ),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: () {
+                // Acción que se ejecuta al presionar el botón
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SecondS()),
+                );
+              },
+              child: const Text("Registra Salida"),
+            ),
+
             const SizedBox(height: 10),
             Image.asset('assets/imagenes/Lo.jpg', width: 200, height: 150),
           ],

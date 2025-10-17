@@ -72,7 +72,7 @@ class _ConfigState extends State<Config> {
                     );
                   },
                 ),
-                ListTile(title: Text('Baja de personal')),
+                ListTile(title: Text('Reportes de Insidencias')),
               ],
             ),
             ListTile(

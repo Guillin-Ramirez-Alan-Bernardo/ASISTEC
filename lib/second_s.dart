@@ -55,7 +55,7 @@ class SecondS extends StatelessWidget {
                     );
                   },
                 ),
-                ListTile(title: Text('Baja de personal')),
+                ListTile(title: Text('Reportes de Insidencias')),
               ],
             ),
             ListTile(
