@@ -72,7 +72,6 @@ class _ConfigState extends State<Config> {
                     );
                   },
                 ),
-                ListTile(title: Text('Reportes de Insidencias')),
               ],
             ),
             ListTile(
@@ -87,6 +86,7 @@ class _ConfigState extends State<Config> {
                 );
               },
             ),
+
             ListTile(
               leading: const Icon(Icons.settings),
               title: const Text('Configuración'),

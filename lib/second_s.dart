@@ -41,23 +41,6 @@ class SecondS extends StatelessWidget {
                 );
               },
             ),
-            ExpansionTile(
-              leading: Icon(Icons.people),
-              title: Text('Personal'),
-              children: [
-                ListTile(
-                  leading: Icon(Icons.access_time),
-                  title: Text('Asistencia del Personal'),
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Asiste()),
-                    );
-                  },
-                ),
-                ListTile(title: Text('Reportes de Insidencias')),
-              ],
-            ),
             ListTile(
               leading: Icon(Icons.logout),
               title: Text('Salir'),
@@ -88,7 +71,7 @@ class SecondS extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const Text(
-              '¡Bienvenid@ ________________ Que te Gustaria consultar el dia de hoy!',
+              '¡Bienvenido que te gustaria consultar el dia de hoy?',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -106,6 +89,8 @@ class SecondS extends StatelessWidget {
               onDaySelected: (selectedDay, focusedDay) {
                 print('Seleccionaste: $selectedDay');
               },
+              selectedDayPredicate: (day) => false,
+              onFormatChanged: (format) {},
             ),
             const SizedBox(height: 10),
             Image.asset('assets/imagenes/Lo.jpg', width: 200, height: 150),
