@@ -3,23 +3,26 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:asistec_b/main.dart';
 import 'package:asistec_b/Second_S.dart';
 import 'package:asistec_b/configuration.dart';
-import 'package:asistec_b/Reportes.dart';
+import 'package:asistec_b/Asistencia.dart';
 
 // Aqui va la IP de la PC prueba
-const String apiUrl = "http://192.168.1.163:8000/registrar_asistencia";
+const String apiUrl = "http://192.168.1.163:8000/Reporte_Ins";
 
-class Asiste extends StatefulWidget {
-  const Asiste({super.key});
+class Report extends StatefulWidget {
+  const Report({super.key});
 
   @override
-  State<Asiste> createState() => _AsisteState();
+  State<Report> createState() => _AsisteState();
 }
 
-class _AsisteState extends State<Asiste> {
+class _AsisteState extends State<Report> {
   bool registrando = false;
   int? userId;
 
@@ -36,7 +39,10 @@ class _AsisteState extends State<Asiste> {
     });
   }
 
-  Future<void> registrarAsistencia(String tipo) async {
+  Future<void> Reportes(String tipo) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("token");
+
     if (userId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -46,23 +52,39 @@ class _AsisteState extends State<Asiste> {
       return;
     }
 
+    final fechaInicio = "2025-11-01 00:00:00";
+    final fechafinal = "2025-11-30 23:59:59";
+
     setState(() => registrando = true);
 
     try {
       final respuesta = await http.post(
         Uri.parse(apiUrl),
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
         body: jsonEncode({
           "userid": userId,
-          "tipo": tipo, // 'I' para entrada, 'O' para salida
+          "fecha_inicio": fechaInicio,
+          "fecha_final": fechafinal,
         }),
       );
 
       if (respuesta.statusCode == 200) {
-        final data = jsonDecode(respuesta.body);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("✅ ${data['mensaje']}")));
+        // 📄 Guardar PDF
+        final bytes = respuesta.bodyBytes;
+
+        final dir = await getApplicationDocumentsDirectory();
+        final file = File("${dir.path}/Insidencia_$userId.pdf");
+        await file.writeAsBytes(bytes);
+
+        // Abrir archivo PDF
+        OpenFile.open(file.path);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("✅ Rerporte Generado Correctamente")),
+        );
       } else {
         ScaffoldMessenger.of(
           context,
@@ -81,7 +103,7 @@ class _AsisteState extends State<Asiste> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registro de Asistencia'),
+        title: const Text('Reportes de insidencias'),
         backgroundColor: const Color.fromARGB(255, 30, 77, 245),
       ),
       drawer: Drawer(
@@ -194,24 +216,16 @@ class _AsisteState extends State<Asiste> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton.icon(
-                      onPressed: () => registrarAsistencia("I"),
-                      icon: const Icon(Icons.login),
-                      label: const Text('Registrar Entrada'),
+                      onPressed: () => Reportes("insidencias"),
+                      icon: const Icon(Icons.file_download),
+                      label: const Text('Rerporte de insidencias'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 15,
+                        backgroundColor: const Color.fromARGB(
+                          255,
+                          115,
+                          175,
+                          243,
                         ),
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    ElevatedButton.icon(
-                      onPressed: () => registrarAsistencia("O"),
-                      icon: const Icon(Icons.logout),
-                      label: const Text('Registrar Salida'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 20,
                           vertical: 15,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:asistec_b/main.dart';
 import 'package:asistec_b/Asistencia.dart';
+import 'package:asistec_b/Reportes.dart';
 
 class SecondS extends StatelessWidget {
   const SecondS({super.key});
@@ -41,17 +42,31 @@ class SecondS extends StatelessWidget {
                 );
               },
             ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Salir'),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MyApp(showLogoutMessage: true),
-                  ),
-                );
-              },
+            ExpansionTile(
+              leading: Icon(Icons.people),
+              title: Text('Personal'),
+              children: [
+                ListTile(
+                  leading: Icon(Icons.access_alarm),
+                  title: Text('Asistencia del Personal'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => Asiste()),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.access_alarm),
+                  title: Text('Reportes'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => Report()),
+                    );
+                  },
+                ),
+              ],
             ),
             ListTile(
               leading: Icon(Icons.touch_app_outlined),
@@ -60,6 +75,18 @@ class SecondS extends StatelessWidget {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const Config()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Salir'),
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MyApp(showLogoutMessage: true),
+                  ),
                 );
               },
             ),

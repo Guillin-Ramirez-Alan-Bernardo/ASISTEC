@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:asistec_b/Second_S.dart';
 
 // Aqui va la ip de la maquina que tiene el SQL Server
-const String apiUrl = "http://10.1.25.61:8000/login";
+const String apiUrl = "http://192.168.1.163:8000/login";
 
 void main() {
   runApp(const MyApp());

@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart'; // para seleccionar imágenes
 import 'package:asistec_b/Second_S.dart';
 import 'package:asistec_b/main.dart';
 import 'package:asistec_b/Asistencia.dart';
+import 'package:asistec_b/Reportes.dart';
 
 class Config extends StatefulWidget {
   const Config({super.key});
@@ -72,7 +73,27 @@ class _ConfigState extends State<Config> {
                     );
                   },
                 ),
+                ListTile(
+                  leading: Icon(Icons.access_alarm),
+                  title: Text('Reportes'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => Report()),
+                    );
+                  },
+                ),
               ],
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Configuración'),
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Config()),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.logout),
@@ -83,17 +104,6 @@ class _ConfigState extends State<Config> {
                   MaterialPageRoute(
                     builder: (context) => const MyApp(showLogoutMessage: true),
                   ),
-                );
-              },
-            ),
-
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Configuración'),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Config()),
                 );
               },
             ),
