@@ -8,6 +8,7 @@ import 'package:asistec_b/main.dart';
 import 'package:asistec_b/Second_S.dart';
 import 'package:asistec_b/configuration.dart';
 import 'package:asistec_b/Reportes.dart';
+import 'package:asistec_b/Justificante.dart';
 
 // Aqui va la IP de la PC prueba
 const String apiUrl = "http://192.168.1.163:8000/registrar_asistencia";
@@ -134,6 +135,18 @@ class _AsisteState extends State<Asiste> {
                     );
                   },
                 ),
+                ListTile(
+                  leading: Icon(Icons.home),
+                  title: Text('Justifiante'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Justifica(),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
             ListTile(
@@ -168,7 +181,7 @@ class _AsisteState extends State<Asiste> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Registro de Asistencia (Prueba Conexión)',
+                'Registro de Asistencia',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

@@ -5,6 +5,7 @@ import 'package:asistec_b/Second_S.dart';
 import 'package:asistec_b/main.dart';
 import 'package:asistec_b/Asistencia.dart';
 import 'package:asistec_b/Reportes.dart';
+import 'package:asistec_b/Justificante.dart';
 
 class Config extends StatefulWidget {
   const Config({super.key});
@@ -80,6 +81,18 @@ class _ConfigState extends State<Config> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => Report()),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.home),
+                  title: Text('Justifiante'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Justifica(),
+                      ),
                     );
                   },
                 ),

@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:asistec_b/main.dart';
 import 'package:asistec_b/Asistencia.dart';
 import 'package:asistec_b/Reportes.dart';
+import 'package:asistec_b/Justificante.dart';
 
 class SecondS extends StatelessWidget {
   const SecondS({super.key});
@@ -63,6 +64,18 @@ class SecondS extends StatelessWidget {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => Report()),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.home),
+                  title: Text('Justifiante'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Justifica(),
+                      ),
                     );
                   },
                 ),

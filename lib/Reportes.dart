@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
@@ -11,6 +12,7 @@ import 'package:asistec_b/main.dart';
 import 'package:asistec_b/Second_S.dart';
 import 'package:asistec_b/configuration.dart';
 import 'package:asistec_b/Asistencia.dart';
+import 'package:asistec_b/jUSTIFICANTE.dart';
 
 // Aqui va la IP de la PC prueba
 const String apiUrl = "http://192.168.1.163:8000/Reporte_Ins";
@@ -39,7 +41,26 @@ class _AsisteState extends State<Report> {
     });
   }
 
-  Future<void> Reportes(String tipo) async {
+  Future<void> RangoFecha() async {
+    final DateTimeRange? rango = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+      helpText: "Selecciona el periodo del reporte",
+    );
+
+    if (rango != null) {
+      print("Inicio: ${rango.start}");
+      print("Final: ${rango.end}");
+
+      await Reportes(
+        rango.start.toIso8601String(),
+        rango.end.toIso8601String(),
+      );
+    }
+  }
+
+  Future<void> Reportes(String fechaInicio, String fechafinal) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("token");
 
@@ -51,9 +72,6 @@ class _AsisteState extends State<Report> {
       );
       return;
     }
-
-    final fechaInicio = "2025-11-01 00:00:00";
-    final fechafinal = "2025-11-30 23:59:59";
 
     setState(() => registrando = true);
 
@@ -156,6 +174,18 @@ class _AsisteState extends State<Report> {
                     );
                   },
                 ),
+                ListTile(
+                  leading: Icon(Icons.home),
+                  title: Text('Justifiante'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Justifica(),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
             ListTile(
@@ -190,7 +220,7 @@ class _AsisteState extends State<Report> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Registro de Asistencia (Prueba Conexión)',
+                'Reporte de Insidencias',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -216,7 +246,7 @@ class _AsisteState extends State<Report> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton.icon(
-                      onPressed: () => Reportes("insidencias"),
+                      onPressed: () => RangoFecha(),
                       icon: const Icon(Icons.file_download),
                       label: const Text('Rerporte de insidencias'),
                       style: ElevatedButton.styleFrom(
