@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:asistec_b/Second_S.dart';
 
 // Aqui va la ip de la maquina que tiene el SQL Server
-const String apiUrl = "http://192.168.1.163:8000/login";
+const String apiUrl = "http://172.1.1.5:8000/login";
 
 void main() {
   runApp(const MyApp());
@@ -76,9 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
   // -------------------- LOGIN REAL --------------------
   Future<void> loginUsuario() async {
     final numero = _idController.text.trim();
-    final password = _passwordController.text.trim();
 
-    if (numero.isEmpty || password.isEmpty) {
+    if (numero.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -96,10 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
       final respuesta = await http.post(
         Uri.parse(apiUrl),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "numero_empleado": int.parse(numero),
-          "password": password,
-        }),
+        body: jsonEncode({"numero_empleado": int.parse(numero)}),
       );
 
       if (respuesta.statusCode == 200) {
@@ -182,33 +178,19 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: !passwordVisible,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        labelText: "Contraseña",
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            passwordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              passwordVisible = !passwordVisible;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
+
                     const SizedBox(height: 30),
                     ElevatedButton.icon(
                       onPressed: loginUsuario,
                       icon: const Icon(Icons.login),
                       label: const Text("Iniciar sesión"),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 3, 11, 234),
+                        backgroundColor: const Color.fromARGB(
+                          255,
+                          160,
+                          178,
+                          247,
+                        ),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 30,
                           vertical: 15,

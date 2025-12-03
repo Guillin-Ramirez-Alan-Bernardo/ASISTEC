@@ -6,12 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:asistec_b/main.dart';
 import 'package:asistec_b/Second_S.dart';
-import 'package:asistec_b/configuration.dart';
 import 'package:asistec_b/Reportes.dart';
 import 'package:asistec_b/Justificante.dart';
 
-// Aqui va la IP de la PC prueba
-const String apiUrl = "http://192.168.1.163:8000/registrar_asistencia";
+// Aqui va la IP de la PC prueb
+const String apiUrl = "http://172.1.1.5:8000/registrar_asistencia";
 
 class Asiste extends StatefulWidget {
   const Asiste({super.key});
@@ -90,7 +89,7 @@ class _AsisteState extends State<Asiste> {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 0, 234, 255),
+                color: const Color.fromARGB(255, 160, 178, 247),
               ),
               child: Text(
                 'Menú principal',
@@ -150,16 +149,6 @@ class _AsisteState extends State<Asiste> {
               ],
             ),
             ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Configuración'),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Config()),
-                );
-              },
-            ),
-            ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Salir'),
               onTap: () {
@@ -213,8 +202,8 @@ class _AsisteState extends State<Asiste> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 15,
+                          horizontal: 5,
+                          vertical: 2,
                         ),
                       ),
                     ),
@@ -226,8 +215,8 @@ class _AsisteState extends State<Asiste> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 15,
+                          horizontal: 5,
+                          vertical: 2,
                         ),
                       ),
                     ),

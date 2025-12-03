@@ -12,12 +12,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:asistec_b/main.dart';
 import 'package:asistec_b/Second_S.dart';
-import 'package:asistec_b/configuration.dart';
 import 'package:asistec_b/Asistencia.dart';
 import 'package:asistec_b/Reportes.dart';
 
 // IP de la PC donde está el FastAPI
-const String apiUrl = "http://192.168.1.163:8000/Reporte_Ins";
+const String apiUrl = "http://172.1.1.5:8000s/Reporte_Ins";
 
 class Justifica extends StatefulWidget {
   const Justifica({super.key});
@@ -67,7 +66,7 @@ class _JustiState extends State<Justifica> {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 0, 234, 255),
+                color: const Color.fromARGB(255, 160, 178, 247),
               ),
               child: Text(
                 'Menú principal',
@@ -121,16 +120,6 @@ class _JustiState extends State<Justifica> {
                   },
                 ),
               ],
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Configuración'),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => const Config()),
-                );
-              },
             ),
             ListTile(
               leading: const Icon(Icons.logout),

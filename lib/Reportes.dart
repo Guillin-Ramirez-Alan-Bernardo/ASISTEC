@@ -10,12 +10,11 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:asistec_b/main.dart';
 import 'package:asistec_b/Second_S.dart';
-import 'package:asistec_b/configuration.dart';
 import 'package:asistec_b/Asistencia.dart';
 import 'package:asistec_b/jUSTIFICANTE.dart';
 
 // Aqui va la IP de la PC prueba
-const String apiUrl = "http://192.168.1.163:8000/Reporte_Ins";
+const String apiUrl = "http://172.1.1.5:8000/Reporte_Ins";
 
 class Report extends StatefulWidget {
   const Report({super.key});
@@ -45,7 +44,7 @@ class _AsisteState extends State<Report> {
     final DateTimeRange? rango = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
+      lastDate: DateTime(2080),
       helpText: "Selecciona el periodo del reporte",
     );
 
@@ -129,7 +128,7 @@ class _AsisteState extends State<Report> {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 0, 234, 255),
+                color: const Color.fromARGB(255, 160, 178, 247),
               ),
               child: Text(
                 'Menú principal',
@@ -189,16 +188,6 @@ class _AsisteState extends State<Report> {
               ],
             ),
             ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Configuración'),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Config()),
-                );
-              },
-            ),
-            ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Salir'),
               onTap: () {
@@ -252,9 +241,9 @@ class _AsisteState extends State<Report> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(
                           255,
-                          115,
-                          175,
-                          243,
+                          160,
+                          178,
+                          247,
                         ),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 20,

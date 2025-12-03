@@ -1,4 +1,3 @@
-import 'package:asistec_b/configuration.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:asistec_b/main.dart';
@@ -22,7 +21,7 @@ class SecondS extends StatelessWidget {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 0, 234, 255),
+                color: const Color.fromARGB(255, 160, 178, 247),
               ),
               child: Text(
                 'Menú principal',
@@ -80,16 +79,6 @@ class SecondS extends StatelessWidget {
                   },
                 ),
               ],
-            ),
-            ListTile(
-              leading: Icon(Icons.touch_app_outlined),
-              title: Text('Configuracion'),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Config()),
-                );
-              },
             ),
             ListTile(
               leading: const Icon(Icons.logout),
