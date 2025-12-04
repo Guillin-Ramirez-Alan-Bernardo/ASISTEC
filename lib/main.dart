@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/widgets.dart'; // <-- IMPORTANTE
 
 import 'package:asistec_b/Second_S.dart';
 
 // Aqui va la ip de la maquina que tiene el SQL Server
 const String apiUrl = "http://172.1.1.5:8000/login";
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // <-- OBLIGATORIO EN RELEASE
+  await SharedPreferences.getInstance(); // <-- INICIALIZA EL CANAL NATIVO
   runApp(const MyApp());
 }
 
@@ -47,14 +50,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _idController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
   bool passwordVisible = false;
   bool cargando = false;
 
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.showLogoutMessage) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -80,9 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (numero.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            "Por favor ingrese su número de empleado y contraseña.",
-          ),
+          content: Text("Por favor ingrese su número de empleado."),
           backgroundColor: Colors.red,
         ),
       );
@@ -95,42 +94,27 @@ class _MyHomePageState extends State<MyHomePage> {
       final respuesta = await http.post(
         Uri.parse(apiUrl),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"numero_empleado": int.parse(numero)}),
+        body: jsonEncode({
+          "numero_empleado": int.parse(numero),
+          "password": "", // si luego agregas password aquí va
+        }),
       );
 
       if (respuesta.statusCode == 200) {
         final data = jsonDecode(respuesta.body);
 
-        // Guardamos el ID y nombre localmente
         final prefs = await SharedPreferences.getInstance();
         await prefs.setInt('userid', data['userid']);
         await prefs.setString('nombre', data['nombre']);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Bienvenido ${data['nombre']}"),
-            backgroundColor: Colors.green,
-          ),
-        );
-
-        // Navegamos a la pantalla principal
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const SecondS()),
         );
-      } else if (respuesta.statusCode == 401) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Credenciales inválidas."),
-            backgroundColor: Colors.red,
-          ),
-        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              "Error del servidor: ${respuesta.statusCode.toString()}",
-            ),
+            content: Text("Error del servidor: ${respuesta.body}"),
             backgroundColor: Colors.red,
           ),
         );
@@ -138,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Error de conexión con el servidor (${e.toString()})"),
+          content: Text("Error de conexión con el servidor: $e"),
           backgroundColor: Colors.red,
         ),
       );
@@ -147,7 +131,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  // -------------------- INTERFAZ LOGIN --------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -161,7 +144,6 @@ class _MyHomePageState extends State<MyHomePage> {
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
                       'assets/imagenes/tec1.png',
@@ -177,31 +159,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         labelText: 'Número de empleado',
                       ),
                     ),
-                    const SizedBox(height: 20),
-
                     const SizedBox(height: 30),
                     ElevatedButton.icon(
                       onPressed: loginUsuario,
                       icon: const Icon(Icons.login),
                       label: const Text("Iniciar sesión"),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(
-                          255,
-                          160,
-                          178,
-                          247,
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 30,
-                          vertical: 15,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    Image.asset(
-                      'assets/imagenes/Lo.jpg',
-                      width: 150,
-                      height: 100,
                     ),
                   ],
                 ),
