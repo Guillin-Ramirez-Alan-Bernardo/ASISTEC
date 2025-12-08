@@ -1,22 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:io';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:asistec_b/main.dart';
-import 'package:asistec_b/Second_S.dart';
-import 'package:asistec_b/Asistencia.dart';
-import 'package:asistec_b/Reportes.dart';
-
-// IP de la PC donde está el FastAPI
-const String apiUrl = "http://172.1.1.5:8000s/Reporte_Ins";
+import 'package:Atenea/main.dart';
+import 'package:Atenea/Second_S.dart';
+import 'package:Atenea/Asistencia.dart';
+import 'package:Atenea/Reportes.dart';
 
 class Justifica extends StatefulWidget {
   const Justifica({super.key});
@@ -26,7 +16,6 @@ class Justifica extends StatefulWidget {
 }
 
 class _JustiState extends State<Justifica> {
-  bool generando = false;
   int? userId;
 
   @override
@@ -36,7 +25,8 @@ class _JustiState extends State<Justifica> {
   }
 
   Future<void> cargarUsuario() async {
-    final prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     setState(() {
       userId = prefs.getInt('userid');
     });
@@ -52,13 +42,12 @@ class _JustiState extends State<Justifica> {
     }
   }
 
-  // -------- INTERFAZ --------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Subir Justificante"),
-        backgroundColor: Color.fromARGB(255, 30, 77, 245),
+        backgroundColor: const Color.fromARGB(255, 30, 77, 245),
       ),
 
       drawer: Drawer(
@@ -66,13 +55,14 @@ class _JustiState extends State<Justifica> {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 160, 178, 247),
+                color: Color.fromARGB(255, 160, 178, 247),
               ),
               child: Text(
                 'Menú principal',
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
+
             ListTile(
               leading: const Icon(Icons.home),
               title: const Text('Inicio'),
@@ -83,52 +73,56 @@ class _JustiState extends State<Justifica> {
                 );
               },
             ),
+
             ExpansionTile(
-              leading: Icon(Icons.people),
-              title: Text('Personal'),
+              leading: const Icon(Icons.people),
+              title: const Text('Personal'),
               children: [
                 ListTile(
-                  leading: Icon(Icons.access_alarm),
-                  title: Text('Asistencia del Personal'),
+                  leading: const Icon(Icons.access_alarm),
+                  title: const Text('Asistencia del Personal'),
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => Asiste()),
+                      MaterialPageRoute(builder: (_) => const Asiste()),
                     );
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.access_alarm),
-                  title: Text('Reportes'),
+                  leading: const Icon(Icons.insert_drive_file),
+                  title: const Text('Reportes'),
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => Report()),
+                      MaterialPageRoute(builder: (_) => const Report()),
                     );
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.home),
-                  title: Text('Justifiante'),
+                  leading: const Icon(Icons.description),
+                  title: const Text('Justificante'),
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const Justifica(),
-                      ),
+                      MaterialPageRoute(builder: (_) => const Justifica()),
                     );
                   },
                 ),
               ],
             ),
+
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Salir'),
-              onTap: () {
+              onTap: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.clear();
+
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => const MyApp(showLogoutMessage: true),
+                    builder: (_) =>
+                        MyApp(prefs: prefs, showLogoutMessage: true),
                   ),
                 );
               },
@@ -150,9 +144,9 @@ class _JustiState extends State<Justifica> {
               const SizedBox(height: 20),
 
               ElevatedButton.icon(
-                onPressed: () => abrirFormulario(),
-                icon: const Icon(Icons.logout),
-                label: const Text('Subir Justificante'),
+                onPressed: abrirFormulario,
+                icon: const Icon(Icons.upload),
+                label: const Text('Abrir Formulario'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 160, 178, 247),
                   padding: const EdgeInsets.symmetric(

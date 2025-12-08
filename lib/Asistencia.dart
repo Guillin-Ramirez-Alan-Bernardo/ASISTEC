@@ -4,12 +4,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:asistec_b/main.dart';
-import 'package:asistec_b/Second_S.dart';
-import 'package:asistec_b/Reportes.dart';
-import 'package:asistec_b/Justificante.dart';
+import 'package:Atenea/main.dart';
+import 'package:Atenea/Second_S.dart';
+import 'package:Atenea/Reportes.dart';
+import 'package:Atenea/Justificante.dart';
 
-// Aqui va la IP de la PC prueb
 const String apiUrl = "http://172.1.1.5:8000/registrar_asistencia";
 
 class Asiste extends StatefulWidget {
@@ -30,7 +29,8 @@ class _AsisteState extends State<Asiste> {
   }
 
   Future<void> cargarUsuario() async {
-    final prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     setState(() {
       userId = prefs.getInt('userid');
     });
@@ -52,10 +52,7 @@ class _AsisteState extends State<Asiste> {
       final respuesta = await http.post(
         Uri.parse(apiUrl),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "userid": userId,
-          "tipo": tipo, // 'I' para entrada, 'O' para salida
-        }),
+        body: jsonEncode({"userid": userId, "tipo": tipo}),
       );
 
       if (respuesta.statusCode == 200) {
@@ -84,78 +81,74 @@ class _AsisteState extends State<Asiste> {
         title: const Text('Registro de Asistencia'),
         backgroundColor: const Color.fromARGB(255, 30, 77, 245),
       ),
+
       drawer: Drawer(
         child: ListView(
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 160, 178, 247),
+                color: Color.fromARGB(255, 160, 178, 247),
               ),
               child: Text(
                 'Menú principal',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
+
             ListTile(
               leading: const Icon(Icons.home),
               title: const Text('Inicio'),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SecondS()),
-                );
-              },
+              onTap: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const SecondS()),
+              ),
             ),
+
             ExpansionTile(
-              leading: Icon(Icons.people),
-              title: Text('Personal'),
+              leading: const Icon(Icons.people),
+              title: const Text('Personal'),
               children: [
                 ListTile(
-                  leading: Icon(Icons.access_alarm),
-                  title: Text('Asistencia del Personal'),
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => Asiste()),
-                    );
-                  },
+                  leading: const Icon(Icons.access_alarm),
+                  title: const Text('Asistencia del Personal'),
+                  onTap: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const Asiste()),
+                  ),
                 ),
+
                 ListTile(
-                  leading: Icon(Icons.access_alarm),
-                  title: Text('Reportes'),
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => Report()),
-                    );
-                  },
+                  leading: const Icon(Icons.insert_drive_file),
+                  title: const Text('Reportes'),
+                  onTap: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const Report()),
+                  ),
                 ),
+
                 ListTile(
-                  leading: Icon(Icons.home),
-                  title: Text('Justifiante'),
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Justifica(),
-                      ),
-                    );
-                  },
+                  leading: const Icon(Icons.description),
+                  title: const Text('Justificante'),
+                  onTap: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const Justifica()),
+                  ),
                 ),
               ],
             ),
+
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Salir'),
-              onTap: () {
+              onTap: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.clear();
+
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const MyApp(showLogoutMessage: true),
+                    builder: (_) =>
+                        MyApp(prefs: prefs, showLogoutMessage: true),
                   ),
                 );
               },
@@ -163,67 +156,55 @@ class _AsisteState extends State<Asiste> {
           ],
         ),
       ),
+
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
                 'Registro de Asistencia',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
+
               const SizedBox(height: 20),
+
               TableCalendar(
                 focusedDay: DateTime.now(),
                 firstDay: DateTime.utc(2025, 1, 1),
                 lastDay: DateTime.utc(2030, 12, 31),
-                calendarFormat: CalendarFormat.month,
-                onDaySelected: (selectedDay, focusedDay) {
-                  print('Seleccionaste: $selectedDay');
-                },
               ),
+
               const SizedBox(height: 30),
-              if (registrando)
-                const CircularProgressIndicator()
-              else
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () => registrarAsistencia("I"),
-                      icon: const Icon(Icons.login),
-                      label: const Text('Registrar Entrada'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 5,
-                          vertical: 2,
+
+              registrando
+                  ? const CircularProgressIndicator()
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () => registrarAsistencia("I"),
+                          icon: const Icon(Icons.login),
+                          label: const Text('Registrar Entrada'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                          ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    ElevatedButton.icon(
-                      onPressed: () => registrarAsistencia("O"),
-                      icon: const Icon(Icons.logout),
-                      label: const Text('Registrar Salida'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 5,
-                          vertical: 2,
+                        const SizedBox(width: 20),
+                        ElevatedButton.icon(
+                          onPressed: () => registrarAsistencia("O"),
+                          icon: const Icon(Icons.logout),
+                          label: const Text('Registrar Salida'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
+
               const SizedBox(height: 30),
-              Image.asset('assets/imagenes/Lo.jpg', width: 200, height: 150),
+
+              Image.asset('assets/imagenes/Lo.jpg', width: 200),
             ],
           ),
         ),

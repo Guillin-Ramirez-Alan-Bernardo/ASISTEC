@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
@@ -8,24 +7,24 @@ import 'dart:io';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'package:asistec_b/main.dart';
-import 'package:asistec_b/Second_S.dart';
-import 'package:asistec_b/Asistencia.dart';
-import 'package:asistec_b/jUSTIFICANTE.dart';
+import 'package:Atenea/main.dart';
+import 'package:Atenea/Second_S.dart';
+import 'package:Atenea/Asistencia.dart';
+import 'package:Atenea/Justificante.dart';
 
-// Aqui va la IP de la PC prueba
 const String apiUrl = "http://172.1.1.5:8000/Reporte_Ins";
 
 class Report extends StatefulWidget {
   const Report({super.key});
 
   @override
-  State<Report> createState() => _AsisteState();
+  State<Report> createState() => _ReportState();
 }
 
-class _AsisteState extends State<Report> {
-  bool registrando = false;
+class _ReportState extends State<Report> {
+  bool generando = false;
   int? userId;
+  String? token;
 
   @override
   void initState() {
@@ -34,13 +33,15 @@ class _AsisteState extends State<Report> {
   }
 
   Future<void> cargarUsuario() async {
-    final prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     setState(() {
       userId = prefs.getInt('userid');
+      token = prefs.getString('token');
     });
   }
 
-  Future<void> RangoFecha() async {
+  Future<void> seleccionarRangoFecha() async {
     final DateTimeRange? rango = await showDateRangePicker(
       context: context,
       firstDate: DateTime(2020),
@@ -49,30 +50,24 @@ class _AsisteState extends State<Report> {
     );
 
     if (rango != null) {
-      print("Inicio: ${rango.start}");
-      print("Final: ${rango.end}");
-
-      await Reportes(
+      await generarReporte(
         rango.start.toIso8601String(),
         rango.end.toIso8601String(),
       );
     }
   }
 
-  Future<void> Reportes(String fechaInicio, String fechafinal) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("token");
-
-    if (userId == null) {
+  Future<void> generarReporte(String fechaInicio, String fechaFinal) async {
+    if (userId == null || token == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Error: No se encontró el ID del usuario.'),
+          content: Text('Error: No se encontró el usuario o el token.'),
         ),
       );
       return;
     }
 
-    setState(() => registrando = true);
+    setState(() => generando = true);
 
     try {
       final respuesta = await http.post(
@@ -84,23 +79,21 @@ class _AsisteState extends State<Report> {
         body: jsonEncode({
           "userid": userId,
           "fecha_inicio": fechaInicio,
-          "fecha_final": fechafinal,
+          "fecha_final": fechaFinal,
         }),
       );
 
       if (respuesta.statusCode == 200) {
-        // 📄 Guardar PDF
         final bytes = respuesta.bodyBytes;
 
         final dir = await getApplicationDocumentsDirectory();
-        final file = File("${dir.path}/Insidencia_$userId.pdf");
+        final file = File('${dir.path}/Incidencia_$userId.pdf');
         await file.writeAsBytes(bytes);
 
-        // Abrir archivo PDF
         OpenFile.open(file.path);
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("✅ Rerporte Generado Correctamente")),
+          const SnackBar(content: Text("✅ Reporte generado correctamente")),
         );
       } else {
         ScaffoldMessenger.of(
@@ -112,7 +105,7 @@ class _AsisteState extends State<Report> {
         context,
       ).showSnackBar(SnackBar(content: Text("❌ Error de conexión: $e")));
     } finally {
-      setState(() => registrando = false);
+      setState(() => generando = false);
     }
   }
 
@@ -120,81 +113,83 @@ class _AsisteState extends State<Report> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reportes de insidencias'),
+        title: const Text('Reportes de Incidencias'),
         backgroundColor: const Color.fromARGB(255, 30, 77, 245),
       ),
+
       drawer: Drawer(
         child: ListView(
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 160, 178, 247),
+                color: Color.fromARGB(255, 160, 178, 247),
               ),
               child: Text(
-                'Menú principal',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                "Menú principal",
+                style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
+
             ListTile(
               leading: const Icon(Icons.home),
-              title: const Text('Inicio'),
+              title: const Text("Inicio"),
               onTap: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const SecondS()),
+                  MaterialPageRoute(builder: (_) => const SecondS()),
                 );
               },
             ),
+
             ExpansionTile(
-              leading: Icon(Icons.people),
-              title: Text('Personal'),
+              leading: const Icon(Icons.people),
+              title: const Text("Personal"),
               children: [
                 ListTile(
-                  leading: Icon(Icons.access_alarm),
-                  title: Text('Asistencia del Personal'),
+                  leading: const Icon(Icons.access_alarm),
+                  title: const Text("Asistencia del Personal"),
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => Asiste()),
+                      MaterialPageRoute(builder: (_) => const Asiste()),
                     );
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.access_alarm),
-                  title: Text('Reportes'),
+                  leading: const Icon(Icons.insert_drive_file),
+                  title: const Text("Reportes"),
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => Report()),
+                      MaterialPageRoute(builder: (_) => const Report()),
                     );
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.home),
-                  title: Text('Justifiante'),
+                  leading: const Icon(Icons.description),
+                  title: const Text("Justificante"),
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const Justifica(),
-                      ),
+                      MaterialPageRoute(builder: (_) => const Justifica()),
                     );
                   },
                 ),
               ],
             ),
+
             ListTile(
               leading: const Icon(Icons.logout),
-              title: const Text('Salir'),
-              onTap: () {
+              title: const Text("Salir"),
+              onTap: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.clear();
+
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const MyApp(showLogoutMessage: true),
+                    builder: (_) =>
+                        MyApp(prefs: prefs, showLogoutMessage: true),
                   ),
                 );
               },
@@ -202,14 +197,14 @@ class _AsisteState extends State<Report> {
           ],
         ),
       ),
+
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Reporte de Insidencias',
+                "Reporte de Incidencias",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -217,27 +212,24 @@ class _AsisteState extends State<Report> {
                 ),
                 textAlign: TextAlign.center,
               ),
+
               const SizedBox(height: 20),
+
               TableCalendar(
                 focusedDay: DateTime.now(),
                 firstDay: DateTime.utc(2025, 1, 1),
                 lastDay: DateTime.utc(2030, 12, 31),
                 calendarFormat: CalendarFormat.month,
-                onDaySelected: (selectedDay, focusedDay) {
-                  print('Seleccionaste: $selectedDay');
-                },
               ),
+
               const SizedBox(height: 30),
-              if (registrando)
-                const CircularProgressIndicator()
-              else
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () => RangoFecha(),
-                      icon: const Icon(Icons.file_download),
-                      label: const Text('Rerporte de insidencias'),
+
+              generando
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton.icon(
+                      onPressed: seleccionarRangoFecha,
+                      icon: const Icon(Icons.picture_as_pdf),
+                      label: const Text("Generar reporte"),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(
                           255,
@@ -251,10 +243,10 @@ class _AsisteState extends State<Report> {
                         ),
                       ),
                     ),
-                  ],
-                ),
+
               const SizedBox(height: 30),
-              Image.asset('assets/imagenes/Lo.jpg', width: 200, height: 150),
+
+              Image.asset("assets/imagenes/Lo.jpg", width: 200),
             ],
           ),
         ),
